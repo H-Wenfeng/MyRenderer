@@ -242,6 +242,7 @@ Matrix rotation_z(float cosangle, float sinangle)
 void ModelView(Vec3f eye, Vec3f center, Vec3f up)
 {
 
+	MV = Matrix::identity(4);
 	// 变换相机的视角，变换坐标系
 	/*
 	|x'|        |x|	  |	   |
@@ -270,5 +271,6 @@ void ModelView(Vec3f eye, Vec3f center, Vec3f up)
 
 void projection(float v)
 {
+	Projection = Matrix::identity(4);
 	Projection[3][2] = v;
 }

@@ -26,6 +26,8 @@ Model *model = NULL;
 
 Vec3f eye(1, 0, 5);
 Vec3f center(0, 0, 0);
+Vec3f origin_light_dir(1, 1, 1);
+int if_change_light = 0;
 Matrix tobuffer = Matrix::identity(4);
 Display *display =  XOpenDisplay(NULL);
 Window window = XCreateSimpleWindow(display, RootWindow(display, DefaultScreen(display)), 10, 10, 900, 900, 1, BlackPixel(display, DefaultScreen(display)), WhitePixel(display, DefaultScreen(display)));
@@ -63,14 +65,17 @@ void camera_control(char keyBuffer[32])
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
                 std::cout << "Simulated Expose event" << std::endl;
+                if_change_light = 0;
             }
-            else if (keyBuffer[0] == 'd' || keyBuffer[0] == 'D')
+            if (keyBuffer[0] == 'd' || keyBuffer[0] == 'D')
             {
                 eye.x = eye.x + 10;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
                 std::cout << "Simulated Expose event" << std::endl;
+                if_change_light = 0;
+
             }
             if (keyBuffer[0] == 'w' || keyBuffer[0] == 'W')
             {
@@ -79,37 +84,108 @@ void camera_control(char keyBuffer[32])
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
                 std::cout << "Simulated Expose event" << std::endl;
+                if_change_light = 0;
+
             }
-            else if (keyBuffer[0] == 's' || keyBuffer[0] == 'S')
+            if (keyBuffer[0] == 's' || keyBuffer[0] == 'S')
             {
                 eye.y = eye.y - 10;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
                 std::cout << "Simulated Expose event" << std::endl;
+                if_change_light = 0;
+
             }
-            else if (keyBuffer[0] == 'i' || keyBuffer[0] == 'I')
+            if (keyBuffer[0] == 'i' || keyBuffer[0] == 'I')
             {
                 eye.z = eye.z + 10;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
                 std::cout << "Simulated Expose event" << std::endl;
+                if_change_light = 0;
+
             }
-            else if (keyBuffer[0] == 'k' || keyBuffer[0] == 'K')
+            if (keyBuffer[0] == 'k' || keyBuffer[0] == 'K')
             {
                 eye.z = eye.z - 10;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
                 std::cout << "Simulated Expose event" << std::endl;
-            }
-            else if (keyBuffer[0] == 'p')
-            {
-                
+                if_change_light = 0;
+
             }
 
 }
+
+void light_control(char keyBuffer[32])
+{
+
+            if (keyBuffer[0] == '4')
+            {
+                origin_light_dir.x = origin_light_dir.x - 10;
+                event.type = Expose;
+                XPutBackEvent(display, &event);
+                XClearWindow(display, window);
+                std::cout << "Simulated Expose event" << std::endl;
+                if_change_light = 1;
+
+            }
+            if (keyBuffer[0] == '6')
+            {
+                origin_light_dir.x = origin_light_dir.x + 10;
+                event.type = Expose;
+                XPutBackEvent(display, &event);
+                XClearWindow(display, window);
+                std::cout << "Simulated Expose event" << std::endl;
+                if_change_light = 1;
+
+            }
+            if (keyBuffer[0] == '8')
+            {
+                origin_light_dir.y = origin_light_dir.y + 10;
+                event.type = Expose;
+                XPutBackEvent(display, &event);
+                XClearWindow(display, window);
+                std::cout << "Simulated Expose event" << std::endl;
+                if_change_light = 1;
+
+            }
+            if (keyBuffer[0] == '2')
+            {
+                origin_light_dir.y = origin_light_dir.y - 10;
+                event.type = Expose;
+                XPutBackEvent(display, &event);
+                XClearWindow(display, window);
+                std::cout << "Simulated Expose event" << std::endl;
+                if_change_light = 1;
+
+            }
+            if (keyBuffer[0] == '+')
+            {
+                origin_light_dir.z = origin_light_dir.z + 10;
+                event.type = Expose;
+                XPutBackEvent(display, &event);
+                XClearWindow(display, window);
+                std::cout << "Simulated Expose event" << std::endl;
+                if_change_light = 1;
+
+            }
+            if (keyBuffer[0] == '-')
+            {
+                origin_light_dir.z = origin_light_dir.z - 10;
+                event.type = Expose;
+                XPutBackEvent(display, &event);
+                XClearWindow(display, window);
+                std::cout << "Simulated Expose event" << std::endl;
+                if_change_light = 1;
+            }
+
+}
+
+
 
 struct PhongShader : public MyShader
 {
@@ -273,11 +349,11 @@ int main(int argc, char **argv)
     spec.read_tga_file("./tga/african_head_spec.tga");
 
     // glows.read_tga_file("./tga/african_head_glow.tga");
-    int if_change_light = 0;
     int defaultValue = -1 * 0x3f3f3f3f;
     shadowbuffer.resize(width + 1);
     for (int i = 0; i <= width + 1; i++)
         shadowbuffer[i].resize(height + 1, defaultValue);
+        
     while (1)
     {
 
@@ -286,7 +362,8 @@ int main(int argc, char **argv)
         if (event.type == Expose)
         {
             std::cout << eye.x << ' ' << eye.y << ' ' << eye.z << std::endl;
-            Vec3f light_dir(1, 1, 1);
+            std::cout << origin_light_dir.x << ' ' << origin_light_dir.y << ' ' << origin_light_dir.z << std::endl;
+            Vec3f light_dir = origin_light_dir;
             TGAImage depth(width, height, TGAImage::RGB); //深度图
             TGAImage image(width, height, TGAImage::RGB);
             std::vector<std::vector<double>> zbuffer;
@@ -294,27 +371,27 @@ int main(int argc, char **argv)
             zbuffer.resize(width + 1);
             for (int i = 0; i <= width + 1; i++)
                 zbuffer[i].resize(height + 1, defaultValue);
+            
+            for (int i = 0; i <= width; i++)
+                for (int j = 0; j<= height; j++)
+                    shadowbuffer[i][j]=defaultValue;
 
-            if (if_change_light == 0)
+            light_dir.normalize();
+            ModelView(light_dir, center, Vec3f(0, 1, 0));
+            viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4);
+            projection(0);
+
+            DepthShader Dshader;
+            for (int i = 0; i < model->nfaces(); i++)
             {
-
-                light_dir.normalize();
-                ModelView(light_dir, center, Vec3f(0, 1, 0));
-                viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4);
-                projection(0);
-
-                DepthShader Dshader;
-                for (int i = 0; i < model->nfaces(); i++)
-                {
-                    Dshader.vertex(i);
-                    triangle(Dshader.node, Dshader, shadowbuffer, depth, texture, normal, spec, light_dir);
-                }
-                // depth.flip_vertically(); // i want to have the origin at the left bottom corner of the image
-                // depth.write_tga_file("depth.tga");
-
-                tobuffer = ViewPort * Projection * MV;
-                if_change_light = 1;
+                Dshader.vertex(i);
+                triangle(Dshader.node, Dshader, shadowbuffer, depth, texture, normal, spec, light_dir);
             }
+            // depth.flip_vertically(); // i want to have the origin at the left bottom corner of the image
+            // depth.write_tga_file("depth.tga");
+
+            tobuffer = ViewPort * Projection * MV;
+            if_change_light = 1;
 
             ModelView(eye, center, Vec3f(0, 1, 0));
             viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4);
@@ -344,6 +421,7 @@ int main(int argc, char **argv)
         {
             char keyBuffer[32];
             XLookupString(&event.xkey, keyBuffer, sizeof(keyBuffer), NULL, NULL);
+            light_control(keyBuffer);
             camera_control(keyBuffer);
         
         }
