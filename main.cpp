@@ -231,7 +231,7 @@ int main(int argc, char **argv)
         {
             std::cout << eye.x << ' ' << eye.y << ' ' << eye.z << std::endl;
             Vec3f light_dir(1, 1, 1);
-            TGAImage depth(width, height, TGAImage::RGB);
+            TGAImage depth(width, height, TGAImage::RGB); //深度图
             TGAImage image(width, height, TGAImage::RGB);
             std::vector<std::vector<double>> zbuffer;
 
