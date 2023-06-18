@@ -53,7 +53,63 @@ void show_image(TGAImage &image)
         XPutImage(display, window, gc, xImage, 0, 0, 0, 0, 900, 900);
         XFlush(display);
 }
+void camera_control(char keyBuffer[32])
+{
 
+            if (keyBuffer[0] == 'a' || keyBuffer[0] == 'A')
+            {
+                eye.x = eye.x - 10;
+                event.type = Expose;
+                XPutBackEvent(display, &event);
+                XClearWindow(display, window);
+                std::cout << "Simulated Expose event" << std::endl;
+            }
+            else if (keyBuffer[0] == 'd' || keyBuffer[0] == 'D')
+            {
+                eye.x = eye.x + 10;
+                event.type = Expose;
+                XPutBackEvent(display, &event);
+                XClearWindow(display, window);
+                std::cout << "Simulated Expose event" << std::endl;
+            }
+            if (keyBuffer[0] == 'w' || keyBuffer[0] == 'W')
+            {
+                eye.y = eye.y + 10;
+                event.type = Expose;
+                XPutBackEvent(display, &event);
+                XClearWindow(display, window);
+                std::cout << "Simulated Expose event" << std::endl;
+            }
+            else if (keyBuffer[0] == 's' || keyBuffer[0] == 'S')
+            {
+                eye.y = eye.y - 10;
+                event.type = Expose;
+                XPutBackEvent(display, &event);
+                XClearWindow(display, window);
+                std::cout << "Simulated Expose event" << std::endl;
+            }
+            else if (keyBuffer[0] == 'i' || keyBuffer[0] == 'I')
+            {
+                eye.z = eye.z + 10;
+                event.type = Expose;
+                XPutBackEvent(display, &event);
+                XClearWindow(display, window);
+                std::cout << "Simulated Expose event" << std::endl;
+            }
+            else if (keyBuffer[0] == 'k' || keyBuffer[0] == 'K')
+            {
+                eye.z = eye.z - 10;
+                event.type = Expose;
+                XPutBackEvent(display, &event);
+                XClearWindow(display, window);
+                std::cout << "Simulated Expose event" << std::endl;
+            }
+            else if (keyBuffer[0] == 'p')
+            {
+                
+            }
+
+}
 
 struct PhongShader : public MyShader
 {
@@ -217,7 +273,7 @@ int main(int argc, char **argv)
     spec.read_tga_file("./tga/african_head_spec.tga");
 
     // glows.read_tga_file("./tga/african_head_glow.tga");
-    int flag = 0;
+    int if_change_light = 0;
     int defaultValue = -1 * 0x3f3f3f3f;
     shadowbuffer.resize(width + 1);
     for (int i = 0; i <= width + 1; i++)
@@ -239,7 +295,7 @@ int main(int argc, char **argv)
             for (int i = 0; i <= width + 1; i++)
                 zbuffer[i].resize(height + 1, defaultValue);
 
-            if (flag == 0)
+            if (if_change_light == 0)
             {
 
                 light_dir.normalize();
@@ -257,7 +313,7 @@ int main(int argc, char **argv)
                 // depth.write_tga_file("depth.tga");
 
                 tobuffer = ViewPort * Projection * MV;
-                flag = 1;
+                if_change_light = 1;
             }
 
             ModelView(eye, center, Vec3f(0, 1, 0));
@@ -286,47 +342,9 @@ int main(int argc, char **argv)
         /* 当检测到键盘按键,退出消息循环 */
         if (event.type == KeyPress)
         {
-
             char keyBuffer[32];
-            
             XLookupString(&event.xkey, keyBuffer, sizeof(keyBuffer), NULL, NULL);
-            if (keyBuffer[0] == 'a' || keyBuffer[0] == 'A')
-            {
-                eye.x = eye.x - 10;
-                event.type = Expose;
-                XPutBackEvent(display, &event);
-                XClearWindow(display, window);
-                std::cout << "Simulated Expose event" << std::endl;
-            }
-            else if (keyBuffer[0] == 'd' || keyBuffer[0] == 'D')
-            {
-                eye.x = eye.x + 10;
-                event.type = Expose;
-                XPutBackEvent(display, &event);
-                XClearWindow(display, window);
-                std::cout << "Simulated Expose event" << std::endl;
-            }
-            if (keyBuffer[0] == 'w' || keyBuffer[0] == 'W')
-            {
-                eye.y = eye.y + 10;
-                event.type = Expose;
-                XPutBackEvent(display, &event);
-                XClearWindow(display, window);
-                std::cout << "Simulated Expose event" << std::endl;
-            }
-            else if (keyBuffer[0] == 's' || keyBuffer[0] == 'S')
-            {
-                eye.y = eye.y - 10;
-                event.type = Expose;
-                XPutBackEvent(display, &event);
-                XClearWindow(display, window);
-                std::cout << "Simulated Expose event" << std::endl;
-            }
-
-            else if (keyBuffer[0] == 'p')
-            {
-                break;
-            }
+            camera_control(keyBuffer);
         
         }
     }

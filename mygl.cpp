@@ -139,7 +139,7 @@ void triangle(std::vector<std::array<Vec3f, 3>> node, MyShader &Shader, std::vec
 			float w = c.z;
 			float z = pts[0].z * v + pts[1].z * u + pts[2].z * w; // 插值Z坐标
 
-			if ((v >= 0.) && (u >= 0.) && (w >= 0) && zbuffer[x][y] < z)
+			if ((v >= 0.) && (u >= 0.) && (w >= 0) && zbuffer[x][y] < z) //该点重心在三角形内，并且该深度没有被渲染
 			{
 				zbuffer[x][y] = z;
 				TGAColor color;
