@@ -27,6 +27,33 @@ Model *model = NULL;
 Vec3f eye(1, 0, 5);
 Vec3f center(0, 0, 0);
 Matrix tobuffer = Matrix::identity(4);
+Display *display =  XOpenDisplay(NULL);
+Window window = XCreateSimpleWindow(display, RootWindow(display, DefaultScreen(display)), 10, 10, 900, 900, 1, BlackPixel(display, DefaultScreen(display)), WhitePixel(display, DefaultScreen(display)));
+XEvent event;
+GC gc = XCreateGC(display, window, 0, nullptr);
+
+
+void show_image(TGAImage &image)
+{
+        
+        char image2[900][900][4];
+        for (int i = 0; i <= 800; i++)
+            for (int j = 0; j <= 800; j++)
+            {
+                image2[j][i][0] = image.get(i, j).b;
+                image2[j][i][1] = image.get(i, j).g;
+                image2[j][i][2] = image.get(i, j).r;
+                image2[j][i][3] = 0;
+            }
+
+        XImage *xImage = XCreateImage(display, DefaultVisual(display, DefaultScreen(display)), 24,
+                                        ZPixmap, 0, reinterpret_cast<char *>(image2), 900, 900, 32, 0);
+
+        // 绘制图像
+        XPutImage(display, window, gc, xImage, 0, 0, 0, 0, 900, 900);
+        XFlush(display);
+}
+
 
 struct PhongShader : public MyShader
 {
@@ -66,12 +93,6 @@ struct PhongShader : public MyShader
         float sp = spec.get(drawx * spec.get_width(), drawy * spec.get_height()).raw[0];
 
         Vec3f norm;
-        // 如果不使用法线贴图，使用插值法向量
-        norm[0] = c.x * node[2][0].x + c.y * node[2][1].x + c.z * node[2][2].x;
-        norm[1] = c.x * node[2][0].y + c.y * node[2][1].y + c.z * node[2][2].y;
-        norm[2] = c.x * node[2][0].z + c.y * node[2][1].z + c.z * node[2][2].z;
-        // norm = (node[0][1]- node[0][2])^(node[0][1] - node[0][0]);//使用三角形法向量
-        norm.normalize();
         // 使用法线贴图
         if (using_nm == true)
         {
@@ -84,6 +105,12 @@ struct PhongShader : public MyShader
         // 使用切线贴图
         else if (using_tangent == true)
         {
+            // 如果不使用法线贴图，使用插值法向量
+            norm[0] = c.x * node[2][0].x + c.y * node[2][1].x + c.z * node[2][2].x;
+            norm[1] = c.x * node[2][0].y + c.y * node[2][1].y + c.z * node[2][2].y;
+            norm[2] = c.x * node[2][0].z + c.y * node[2][1].z + c.z * node[2][2].z;
+            // norm = (node[0][1]- node[0][2])^(node[0][1] - node[0][0]);//使用三角形法向量
+            norm.normalize();
 
             Matrix A(3, 3);
             A[0][0] = node[0][1].x - node[0][0].x;  A[0][1] = node[0][1].y - node[0][0].y;  A[0][2] = node[0][1].z - node[0][0].z;
@@ -171,11 +198,14 @@ struct DepthShader : public MyShader
 // 坐标变换链:Viewport * Projection * View * Model * v
 int main(int argc, char **argv)
 {
+    XSelectInput(display, window, ExposureMask | KeyPressMask);
+    XMapWindow(display, window);
+    XFlush(display);
 
     TGAImage texture;
     TGAImage normal;
     TGAImage spec;
-    TGAImage glows;
+    // TGAImage glows;
     // model = new Model("./diablo3_pose.obj");
     // texture.read_tga_file("./tga/diablo3_pose_diffuse.tga"); // normal.read_tga_file("./tga/african_head_nm.tga");
     // normal.read_tga_file("./tga/diablo3_pose_nm.tga");
@@ -185,17 +215,8 @@ int main(int argc, char **argv)
     texture.read_tga_file("./tga/african_head_diffuse.tga"); // normal.read_tga_file("./tga/african_head_nm.tga");
     normal.read_tga_file("./tga/african_head_nm.tga");
     spec.read_tga_file("./tga/african_head_spec.tga");
-    glows.read_tga_file("./tga/african_head_glow.tga");
-    Display *display;
-    Window window;
-    XEvent event;
-    display = XOpenDisplay(NULL);
-    int s = DefaultScreen(display);
-    window = XCreateSimpleWindow(display, RootWindow(display, s), 10, 10, 900, 900, 1, BlackPixel(display, s), WhitePixel(display, s));
-    XSelectInput(display, window, ExposureMask | KeyPressMask);
-    XMapWindow(display, window);
-    GC gc = XCreateGC(display, window, 0, nullptr);
-    XFlush(display);
+
+    // glows.read_tga_file("./tga/african_head_glow.tga");
     int flag = 0;
     int defaultValue = -1 * 0x3f3f3f3f;
     shadowbuffer.resize(width + 1);
@@ -255,27 +276,11 @@ int main(int argc, char **argv)
 
             image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
             std::cout << "Rendering Finish!" << std::endl;
-            // delete model;
+            show_image(image);
             // image.write_tga_file("output.tga");
-            char image2[900][900][4];
-            for (int i = 0; i <= 800; i++)
-                for (int j = 0; j <= 800; j++)
-                {
-                    image2[j][i][0] = image.get(i, j).b;
-                    image2[j][i][1] = image.get(i, j).g;
-                    image2[j][i][2] = image.get(i, j).r;
-                    image2[j][i][3] = 0;
-                }
-
-            XImage *xImage = XCreateImage(display, DefaultVisual(display, DefaultScreen(display)), 24,
-                                          ZPixmap, 0, reinterpret_cast<char *>(image2), 900, 900, 32, 0);
-
-            // 绘制图像
-            XPutImage(display, window, gc, xImage, 0, 0, 0, 0, 900, 900);
-
             // XDestroyImage(xImage);
             // 刷新窗口
-            XFlush(display);
+            
         }
 
         /* 当检测到键盘按键,退出消息循环 */
@@ -283,6 +288,7 @@ int main(int argc, char **argv)
         {
 
             char keyBuffer[32];
+            
             XLookupString(&event.xkey, keyBuffer, sizeof(keyBuffer), NULL, NULL);
             if (keyBuffer[0] == 'a' || keyBuffer[0] == 'A')
             {
@@ -321,6 +327,7 @@ int main(int argc, char **argv)
             {
                 break;
             }
+        
         }
     }
 
