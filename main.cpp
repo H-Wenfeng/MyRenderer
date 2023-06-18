@@ -292,8 +292,6 @@ struct PhongShader : public MyShader
         Vec3f r = (norm * (norm * light_dir * 2.f) - light_dir).normalize();
         sp = pow(std::max(r.z, 0.f), sp);
         float diff = std::max(0.f, norm * light_dir);
-        // float inten = std::max(0.f, norm.normalize() * intensity);
-        // std::cout<<r<<std::endl;
         float cr = std::min(255., 6. + shadow * color.r * (1.2 * diff + .8 * sp));
         float cg = std::min(255., 6. + shadow * color.g * (1.2 * diff + .8 * sp));
         float cb = std::min(255., 6. + shadow * color.b * (1.2 * diff + .8 * sp));
@@ -311,8 +309,8 @@ struct DepthShader : public MyShader
         for (int j = 0; j < 3; j++)
         {
             node[0][j] = m2v(MV * v2m(model->vert(model->face(i)[j])));                    // 顶点坐标
-            node[1][j] = textpos(model->vts(model->ft(i)[j]));                             // 顶点纹理坐标
-            node[2][j] = m2v(MV.inverse().transpose() * v2m(model->vns(model->fn(i)[j]))); // 顶点法向量
+            // node[1][j] = textpos(model->vts(model->ft(i)[j]));                             // 顶点纹理坐标
+            // node[2][j] = m2v(MV.inverse().transpose() * v2m(model->vns(model->fn(i)[j]))); // 顶点法向量
         }
     }
 
@@ -357,7 +355,9 @@ int main(int argc, char **argv)
     zbuffer.resize(width + 1);
     for (int i = 0; i <= width + 1; i++)
             zbuffer[i].resize(height + 1, defaultValue); //只会给新添加的元素赋值
-        
+    TGAImage depth(width, height, TGAImage::RGB); //深度图
+    TGAImage image(width, height, TGAImage::RGB);
+
     while (1)
     {
 
@@ -368,8 +368,6 @@ int main(int argc, char **argv)
             std::cout << eye.x << ' ' << eye.y << ' ' << eye.z << std::endl;
             std::cout << origin_light_dir.x << ' ' << origin_light_dir.y << ' ' << origin_light_dir.z << std::endl;
             Vec3f light_dir = origin_light_dir;
-            TGAImage depth(width, height, TGAImage::RGB); //深度图
-            TGAImage image(width, height, TGAImage::RGB);
             
             for (int i = 0; i <= width; i++)
                 for (int j = 0; j<= height; j++)
@@ -387,6 +385,7 @@ int main(int argc, char **argv)
                 projection(0);
 
                 DepthShader Dshader;
+                std::cout<<"Rendering shadow!"<<std::endl;
                 for (int i = 0; i < model->nfaces(); i++)
                 {
                     Dshader.vertex(i);
@@ -406,16 +405,18 @@ int main(int argc, char **argv)
             light_dir = m2v(MV * v2m(light_dir));
             light_dir.normalize();
             PhongShader shader;
-
+            std::cout<<"Rendering color!"<<std::endl;
             for (int i = 0; i < model->nfaces(); i++)
             {
                 shader.vertex(i);
                 triangle(shader.node, shader, zbuffer, image, texture, normal, spec, light_dir);
             }
+            std::cout << "Rendering Finish!" << std::endl;
 
             image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
-            std::cout << "Rendering Finish!" << std::endl;
             show_image(image);
+            image.clear();
+            depth.clear();
             // image.write_tga_file("output.tga");
             // XDestroyImage(xImage);
             // 刷新窗口
