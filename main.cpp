@@ -366,11 +366,11 @@ int main(int argc, char **argv)
             Vec3f light_dir = origin_light_dir;
             TGAImage depth(width, height, TGAImage::RGB); //深度图
             TGAImage image(width, height, TGAImage::RGB);
-            std::vector<std::vector<double>> zbuffer;
 
+            std::vector<std::vector<double>> zbuffer;
             zbuffer.resize(width + 1);
             for (int i = 0; i <= width + 1; i++)
-                zbuffer[i].resize(height + 1, defaultValue);
+                zbuffer[i].resize(height + 1, defaultValue); //只会给新添加的元素赋值
             
             for (int i = 0; i <= width; i++)
                 for (int j = 0; j<= height; j++)
