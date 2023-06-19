@@ -5,7 +5,7 @@
 #include <vector>
 #include "model.h"
 
-Model::Model(const char *filename) : verts_(), faces_() {
+Model::Model(std::string filename) : verts_(), faces_() {
     std::ifstream in;
     in.open (filename, std::ifstream::in);
     if (in.fail()) return;
@@ -72,6 +72,10 @@ Model::Model(const char *filename) : verts_(), faces_() {
 
     }
     std::cerr << "# v# " << verts_.size() << " f# "  << faces_.size() << " vt# "<< vts_.size()<< " vn#"<<vns_.size()<<std::endl;
+    std::string filehead = filename.replace(filename.length()-4, 4, "");
+    texture.read_tga_file(filehead + "_diffuse.tga"); // normal.read_tga_file("./tga/african_head_nm.tga");
+    normal.read_tga_file(filehead + "_nm.tga");
+    spec.read_tga_file(filehead +  "_spec.tga");
 }
 
 Model::~Model() {

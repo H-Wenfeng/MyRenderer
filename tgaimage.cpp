@@ -41,7 +41,7 @@ TGAImage & TGAImage::operator =(const TGAImage &img) {
 	return *this;
 }
 
-bool TGAImage::read_tga_file(const char *filename) {
+bool TGAImage::read_tga_file(std::string filename) {
 	if (data) delete [] data;
 	data = NULL;
 	std::ifstream in;

@@ -118,7 +118,7 @@ Vec3f barycentric(Vec3f A, Vec3f B, Vec3f C, Vec3f P)
 }
 
 // 光栅化,使用引用传参以修改zbuffer
-void triangle(std::vector<std::array<Vec3f, 3>> node, MyShader &Shader, std::vector<std::vector<double>> &zbuffer, TGAImage &image, TGAImage &texture, TGAImage &normal, TGAImage &spec, Vec3f intensity)
+void triangle(std::vector<std::array<Vec3f, 3>> node, MyShader &Shader, std::vector<std::vector<double>> &zbuffer, TGAImage &image, Vec3f intensity)
 {
 	std::array<Vec3f, 3> pts = node[0];
 	pts[0] = m2v(ViewPort * Projection * v2m(pts[0]));
@@ -143,7 +143,7 @@ void triangle(std::vector<std::array<Vec3f, 3>> node, MyShader &Shader, std::vec
 			{
 				zbuffer[x][y] = z;
 				TGAColor color;
-				Shader.fragment(x, y, c, zbuffer, texture, normal, spec, color, intensity);				
+				Shader.fragment(x, y, c, zbuffer, image, color, intensity);				
 				image.set(x, y, color);
 				
 			}

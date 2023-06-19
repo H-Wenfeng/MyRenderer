@@ -3,6 +3,8 @@
 
 #include <vector>
 #include "geometry.h"
+#include "tgaimage.h"
+#include <string>
 
 class Model {
 private:
@@ -13,7 +15,7 @@ private:
 	std::vector<std::vector<int> > ft_;
 	std::vector<std::vector<int> > vn_;
 public:
-	Model(const char *filename);
+	Model(std::string filename);
 	~Model();
 	int nverts();
 	int nvts();
@@ -25,6 +27,9 @@ public:
 	std::vector<int> face(int idx);
 	std::vector<int> ft(int idx);
 	std::vector<int> fn(int idx);
+	TGAImage texture;
+    TGAImage normal;
+    TGAImage spec;
 
 };
 

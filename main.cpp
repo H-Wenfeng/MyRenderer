@@ -33,6 +33,9 @@ Display *display =  XOpenDisplay(NULL);
 Window window = XCreateSimpleWindow(display, RootWindow(display, DefaultScreen(display)), 10, 10, 900, 900, 1, BlackPixel(display, DefaultScreen(display)), WhitePixel(display, DefaultScreen(display)));
 XEvent event;
 GC gc = XCreateGC(display, window, 0, nullptr);
+bool using_tangent = false;
+bool using_nm = true;
+TGAColor nm;
 
 
 void show_image(TGAImage &image)
@@ -60,7 +63,7 @@ void camera_control(char keyBuffer[32])
 
             if (keyBuffer[0] == 'a' || keyBuffer[0] == 'A')
             {
-                eye.x = eye.x - 10;
+                eye.x = eye.x - 1;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
@@ -69,7 +72,7 @@ void camera_control(char keyBuffer[32])
             }
             if (keyBuffer[0] == 'd' || keyBuffer[0] == 'D')
             {
-                eye.x = eye.x + 10;
+                eye.x = eye.x + 1;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
@@ -79,7 +82,7 @@ void camera_control(char keyBuffer[32])
             }
             if (keyBuffer[0] == 'w' || keyBuffer[0] == 'W')
             {
-                eye.y = eye.y + 10;
+                eye.y = eye.y + 1;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
@@ -89,7 +92,7 @@ void camera_control(char keyBuffer[32])
             }
             if (keyBuffer[0] == 's' || keyBuffer[0] == 'S')
             {
-                eye.y = eye.y - 10;
+                eye.y = eye.y - 1;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
@@ -99,7 +102,7 @@ void camera_control(char keyBuffer[32])
             }
             if (keyBuffer[0] == 'i' || keyBuffer[0] == 'I')
             {
-                eye.z = eye.z + 10;
+                eye.z = eye.z + 1;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
@@ -109,7 +112,7 @@ void camera_control(char keyBuffer[32])
             }
             if (keyBuffer[0] == 'k' || keyBuffer[0] == 'K')
             {
-                eye.z = eye.z - 10;
+                eye.z = eye.z - 1;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
@@ -125,7 +128,7 @@ void light_control(char keyBuffer[32])
 
             if (keyBuffer[0] == '4')
             {
-                origin_light_dir.x = origin_light_dir.x - 10;
+                origin_light_dir.x = origin_light_dir.x - 1;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
@@ -135,7 +138,7 @@ void light_control(char keyBuffer[32])
             }
             if (keyBuffer[0] == '6')
             {
-                origin_light_dir.x = origin_light_dir.x + 10;
+                origin_light_dir.x = origin_light_dir.x + 1;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
@@ -145,7 +148,7 @@ void light_control(char keyBuffer[32])
             }
             if (keyBuffer[0] == '8')
             {
-                origin_light_dir.y = origin_light_dir.y + 10;
+                origin_light_dir.y = origin_light_dir.y + 1;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
@@ -155,7 +158,7 @@ void light_control(char keyBuffer[32])
             }
             if (keyBuffer[0] == '2')
             {
-                origin_light_dir.y = origin_light_dir.y - 10;
+                origin_light_dir.y = origin_light_dir.y - 1;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
@@ -165,7 +168,7 @@ void light_control(char keyBuffer[32])
             }
             if (keyBuffer[0] == '+')
             {
-                origin_light_dir.z = origin_light_dir.z + 10;
+                origin_light_dir.z = origin_light_dir.z + 1;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
@@ -175,7 +178,7 @@ void light_control(char keyBuffer[32])
             }
             if (keyBuffer[0] == '-')
             {
-                origin_light_dir.z = origin_light_dir.z - 10;
+                origin_light_dir.z = origin_light_dir.z - 1;
                 event.type = Expose;
                 XPutBackEvent(display, &event);
                 XClearWindow(display, window);
@@ -202,28 +205,23 @@ struct PhongShader : public MyShader
         }
     }
 
-    void fragment(float x, float y, Vec3f &c, std::vector<std::vector<double>> &zbuffer, TGAImage &diffusion, TGAImage &normal, TGAImage &spec, TGAColor &color, Vec3f &light_dir)
+    void fragment(float x, float y, Vec3f &c, std::vector<std::vector<double>> &zbuffer, TGAImage &image, TGAColor &color, Vec3f &light_dir)
     {
 
         float drawx = c.x * node[1][0].x + c.y * node[1][1].x + c.z * node[1][2].x;
         float drawy = c.x * node[1][0].y + c.y * node[1][1].y + c.z * node[1][2].y;
 
-        Vec3f forz;
-        forz.x = x;
-        forz.y = y;
-        forz.z = zbuffer[x][y];
+        Vec3f forz(x, y, zbuffer[x][y]);
 
         // forz = m2v(ViewPort*Projection*MV*(ViewPort*Projection*MV).inverse()*v2m(forz));
         forz = m2v(tobuffer * (ViewPort * Projection * MV).inverse() * v2m(forz));
-
         float shadow = .3 + .7 * (shadowbuffer[forz.x][forz.y] < forz.z + 20);
 
-        bool using_tangent = false;
-        bool using_nm = true;
-        color = diffusion.get(drawx * diffusion.get_width(), drawy * diffusion.get_height());
-        TGAColor nm = normal.get(drawx * normal.get_width(), drawy * normal.get_height());
-        float sp = spec.get(drawx * spec.get_width(), drawy * spec.get_height()).raw[0];
-
+ 
+        color = model->texture.get(drawx * model->texture.get_width(), drawy * model->texture.get_height());
+        nm = model->normal.get(drawx * model->normal.get_width(), drawy * model->normal.get_height());
+        float sp = model->spec.get(drawx * model->spec.get_width(), drawy * model->spec.get_height()).raw[0];
+        
         Vec3f norm;
         // 使用法线贴图
         if (using_nm == true)
@@ -308,13 +306,13 @@ struct DepthShader : public MyShader
         node.resize(3); // 为 node 向量分配大小为 3 的内存空间
         for (int j = 0; j < 3; j++)
         {
-            node[0][j] = m2v(MV * v2m(model->vert(model->face(i)[j])));                    // 顶点坐标
+            node[0][j] = m2v(MV * v2m(model->vert(model->face(i)[j])));                       // 顶点坐标
             // node[1][j] = textpos(model->vts(model->ft(i)[j]));                             // 顶点纹理坐标
             // node[2][j] = m2v(MV.inverse().transpose() * v2m(model->vns(model->fn(i)[j]))); // 顶点法向量
         }
     }
 
-    void fragment(float x, float y, Vec3f &c, std::vector<std::vector<double>> &zbuffer, TGAImage &diffusion, TGAImage &normal, TGAImage &spec, TGAColor &color, Vec3f &light_dir)
+    void fragment(float x, float y, Vec3f &c, std::vector<std::vector<double>> &zbuffer, TGAImage &image, TGAColor &color, Vec3f &light_dir)
     {
         float z = zbuffer[x][y];
         // std::cout<<z<<std::endl;
@@ -332,19 +330,7 @@ int main(int argc, char **argv)
     XMapWindow(display, window);
     XFlush(display);
 
-    TGAImage texture;
-    TGAImage normal;
-    TGAImage spec;
-    // TGAImage glows;
-    // model = new Model("./diablo3_pose.obj");
-    // texture.read_tga_file("./tga/diablo3_pose_diffuse.tga"); // normal.read_tga_file("./tga/african_head_nm.tga");
-    // normal.read_tga_file("./tga/diablo3_pose_nm.tga");
-    // spec.read_tga_file("./tga/diablo3_pose_spec.tga");
-    // glows.read_tga_file("./tga/diablo3_pose_glow.tga");
-    model = new Model("./african_head.obj");
-    texture.read_tga_file("./tga/african_head_diffuse.tga"); // normal.read_tga_file("./tga/african_head_nm.tga");
-    normal.read_tga_file("./tga/african_head_nm.tga");
-    spec.read_tga_file("./tga/african_head_spec.tga");
+    model = new Model("./tga/african_head.obj");
 
     // glows.read_tga_file("./tga/african_head_glow.tga");
     int defaultValue = -1 * 0x3f3f3f3f;
@@ -389,7 +375,7 @@ int main(int argc, char **argv)
                 for (int i = 0; i < model->nfaces(); i++)
                 {
                     Dshader.vertex(i);
-                    triangle(Dshader.node, Dshader, shadowbuffer, depth, texture, normal, spec, light_dir);
+                    triangle(Dshader.node, Dshader, shadowbuffer, depth, light_dir);
                 }
                 // depth.flip_vertically(); // i want to have the origin at the left bottom corner of the image
                 // depth.write_tga_file("depth.tga");
@@ -409,7 +395,7 @@ int main(int argc, char **argv)
             for (int i = 0; i < model->nfaces(); i++)
             {
                 shader.vertex(i);
-                triangle(shader.node, shader, zbuffer, image, texture, normal, spec, light_dir);
+                triangle(shader.node, shader, zbuffer, image, light_dir);
             }
             std::cout << "Rendering Finish!" << std::endl;
 

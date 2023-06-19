@@ -16,7 +16,7 @@ extern Matrix MV;
 struct MyShader {
     virtual ~MyShader(){};
     virtual void vertex(int i) = 0;
-    virtual void fragment(float x, float y, Vec3f &c, std::vector<std::vector<double>>& zbuffer, TGAImage &texture, TGAImage &normal, TGAImage &spec, TGAColor &color, Vec3f &intensity) = 0;
+    virtual void fragment(float x, float y, Vec3f &c, std::vector<std::vector<double>>& zbuffer, TGAImage &image, TGAColor &color, Vec3f &intensity) = 0;
 };
 
 
@@ -27,7 +27,7 @@ Vec3f Centroid(std::array<Vec3f, 3> pts, float x, float y);
 
 void triangle2(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, float intensity, TGAColor color);
 
-void triangle( std::vector<std::array<Vec3f, 3>> node, MyShader &shader,std::vector<std::vector<double>> &zbuffer, TGAImage &image, TGAImage &texture, TGAImage &normal, TGAImage &spec, Vec3f intensity);
+void triangle( std::vector<std::array<Vec3f, 3>> node, MyShader &shader,std::vector<std::vector<double>> &zbuffer, TGAImage &image, Vec3f intensity);
 
 Vec3f textpos(Vec3f v);
 
