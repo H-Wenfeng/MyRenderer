@@ -290,9 +290,9 @@ struct PhongShader : public MyShader
         Vec3f r = (norm * (norm * light_dir * 2.f) - light_dir).normalize();
         sp = pow(std::max(r.z, 0.f), sp);
         float diff = std::max(0.f, norm * light_dir);
-        float cr = std::min(255., 6. + shadow * color.r * (1.2 * diff + .8 * sp));
-        float cg = std::min(255., 6. + shadow * color.g * (1.2 * diff + .8 * sp));
-        float cb = std::min(255., 6. + shadow * color.b * (1.2 * diff + .8 * sp));
+        float cr = std::min(255., 10. + shadow * color.r * (1.2 * diff + .8 * sp));
+        float cg = std::min(255., 10. + shadow * color.g * (1.2 * diff + .8 * sp));
+        float cb = std::min(255., 10. + shadow * color.b * (1.2 * diff + .8 * sp));
         color = TGAColor(cr, cg, cb, 255);
     }
 };
@@ -323,14 +323,37 @@ struct DepthShader : public MyShader
     }
 };
 
+
+
+void Shadow_rendering(Model *model, DepthShader &Shader, std::vector<std::vector<double>> &buffer, TGAImage &image, Vec3f light_dir)
+{
+
+        for (int i = 0; i < model->nfaces(); i++)
+        {
+            Shader.vertex(i);
+            triangle(Shader.node, Shader, buffer, image, light_dir);
+        }
+
+}
+
+
+void Color_rendering(Model *model, PhongShader &Shader, std::vector<std::vector<double>> &buffer, TGAImage &image, Vec3f light_dir)
+{
+
+        for (int i = 0; i < model->nfaces(); i++)
+        {
+            Shader.vertex(i);
+            triangle(Shader.node, Shader, buffer, image, light_dir);
+        }
+
+}
+
 // 坐标变换链:Viewport * Projection * View * Model * v
 int main(int argc, char **argv)
 {
     XSelectInput(display, window, ExposureMask | KeyPressMask);
     XMapWindow(display, window);
     XFlush(display);
-
-    model = new Model("./tga/african_head.obj");
 
     // glows.read_tga_file("./tga/african_head_glow.tga");
     int defaultValue = -1 * 0x3f3f3f3f;
@@ -344,6 +367,7 @@ int main(int argc, char **argv)
     TGAImage depth(width, height, TGAImage::RGB); //深度图
     TGAImage image(width, height, TGAImage::RGB);
 
+
     while (1)
     {
 
@@ -351,8 +375,9 @@ int main(int argc, char **argv)
         /* 绘制窗口或者重新绘制 */
         if (event.type == Expose)
         {
-            std::cout << eye.x << ' ' << eye.y << ' ' << eye.z << std::endl;
-            std::cout << origin_light_dir.x << ' ' << origin_light_dir.y << ' ' << origin_light_dir.z << std::endl;
+            model = new Model("./tga/african_head.obj");
+            // std::cout << eye.x << ' ' << eye.y << ' ' << eye.z << std::endl;
+            // std::cout << origin_light_dir.x << ' ' << origin_light_dir.y << ' ' << origin_light_dir.z << std::endl;
             Vec3f light_dir = origin_light_dir;
             
             for (int i = 0; i <= width; i++)
@@ -372,13 +397,7 @@ int main(int argc, char **argv)
 
                 DepthShader Dshader;
                 std::cout<<"Rendering shadow!"<<std::endl;
-                for (int i = 0; i < model->nfaces(); i++)
-                {
-                    Dshader.vertex(i);
-                    triangle(Dshader.node, Dshader, shadowbuffer, depth, light_dir);
-                }
-                // depth.flip_vertically(); // i want to have the origin at the left bottom corner of the image
-                // depth.write_tga_file("depth.tga");
+                Shadow_rendering(model, Dshader, shadowbuffer, depth, light_dir);
                 tobuffer = ViewPort * Projection * MV;
                 if_change_light = 0;
             }
@@ -392,11 +411,13 @@ int main(int argc, char **argv)
             light_dir.normalize();
             PhongShader shader;
             std::cout<<"Rendering color!"<<std::endl;
-            for (int i = 0; i < model->nfaces(); i++)
-            {
-                shader.vertex(i);
-                triangle(shader.node, shader, zbuffer, image, light_dir);
-            }
+            Color_rendering(model, shader, zbuffer, image, light_dir);
+
+            model = new Model("./tga/african_head_eye_inner.obj");
+            std::cout<<"Rendering color!"<<std::endl;
+            Color_rendering(model, shader, zbuffer, image, light_dir);
+
+
             std::cout << "Rendering Finish!" << std::endl;
 
             image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
