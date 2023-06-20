@@ -29,7 +29,9 @@ This project aims to document my self-learning journey in Computer Graphics and 
 <p>* Blinn-Phong Model</p>
 <p>* X11 API + Keyboard-based Camera/Light control<p>
 </td>
-<td><img src="./2023-06-19 12-21-39[00_00_00--00_00_20].gif" width="200" height="200" />
+<td>
+<div align='right'>
+<img src="./2023-06-19 12-21-39[00_00_00--00_00_20].gif" width="200" height="200" /></div>
 </table>
 </td>
 </tr>
@@ -45,6 +47,8 @@ Use WASDIK to control the camera.
 Use 8246+- to control the light.
 ```
 ## Reference
+https://nostarch.com/computer-graphics-scratch
+
 https://learnopengl.com/
 
 https://github.com/ssloy/tinyrenderer
