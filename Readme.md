@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/H-Wenfeng/MyRenderer">
-    <img src="./2023-06-20 22-01-42[00_00_01--00_00_19].gif" width="200" height="200" />
+    <img src="./cat.gif" width="200" height="200" />
   </a>
 
   <h1>ΩRenderer</h1>
@@ -29,8 +29,9 @@ This project aims to document my self-learning journey in Computer Graphics and 
 <p>* Blinn-Phong Model</p>
 <p>* X11 API + Keyboard-based Camera/Light control<p>
 </td>
+<td><img src="./wolf.gif" width="200" height="200" /></td>
 <td>
-<right> <img src="./2023-06-19 12-21-39[00_00_00--00_00_20].gif" width="200" height="200" /></td>
+<img src="./head.gif" width="200" height="200" /></td>
 </table>
 </td>
 </tr>
