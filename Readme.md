@@ -3,7 +3,7 @@
     <img src="./cat.gif" width="200" height="200" />
   </a>
 
-  <h1>ΩRenderer</h1>
+  <h1> :smiley_cat: Renderer</h1>
 
   <p>
  Aiming to build a pure self-made C++-based renderer.
