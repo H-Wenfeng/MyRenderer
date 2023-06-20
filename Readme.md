@@ -30,7 +30,7 @@ This project aims to document my self-learning journey in Computer Graphics and 
 <p>* X11 API + Keyboard-based Camera/Light control<p>
 </td>
 <td>
-<td><right> <img src="./2023-06-19 12-21-39[00_00_00--00_00_20].gif" width="200" height="200" /></td>
+<right> <img src="./2023-06-19 12-21-39[00_00_00--00_00_20].gif" width="200" height="200" /></td>
 </table>
 </td>
 </tr>
