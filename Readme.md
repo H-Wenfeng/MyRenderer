@@ -12,10 +12,10 @@
 
 <!-- ![img](https://github.com/H-Wenfeng/MyRenderer/blob/main/2023-06-19%2012-21-39%5B00_00_00--00_00_20%5D.gif) -->
 
-## Introductions
+## Introductions :smiley_cat:
 
 This project aims to document my self-learning journey in Computer Graphics and improve it further in the future. One of the main goals is to ensure that all important code blocks are accompanied by detailed annotations for better understanding. Additionally, I will strive to add more functions and reproduce interesting papers using this renderer.
-## Features
+## Features :smile_cat:
 <div align="left">
 <table rules="none">
 <tr>
@@ -38,17 +38,20 @@ This project aims to document my self-learning journey in Computer Graphics and 
 </tr>
 </div>
 
-## Usage
+## Usage :computer:
 This project is powered by WSL2 with Ubuntu 20.04.
 
 ```
 sudo apt install gcc libx11-dev
 make ./main
-Use WASDIK to control the camera.
-Use 8246+- to control the light.
 ```
 
-## Todo
+```
+Press W A S D I K to control the camera.
+Press 8 2 4 6 + - to control the light.
+```
+
+## Todo :muscle:
 
 - [ ] Orbital Camera
 - [ ] UI
@@ -61,7 +64,7 @@ Use 8246+- to control the light.
 
 
 
-## Reference
+## Reference :notebook_with_decorative_cover:
 https://nostarch.com/computer-graphics-scratch
 
 https://learnopengl.com/
