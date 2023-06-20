@@ -30,11 +30,13 @@ This project aims to document my self-learning journey in Computer Graphics and 
 <p>* X11 API + Keyboard-based Camera/Light control<p>
 </td>
 <td><img src="./wolf.gif" width="200" height="200" />
+
 <center>
 Interpo. Norm. Vec.
 </center></td>
 <td>
 <img src="./head.gif" width="200" height="200" />
+
 <center>
  Tex. Map and Norm. Map
 </center></td></td>
