@@ -34,7 +34,7 @@ Window window = XCreateSimpleWindow(display, RootWindow(display, DefaultScreen(d
 XEvent event;
 GC gc = XCreateGC(display, window, 0, nullptr);
 bool using_tangent = false;
-bool using_nm = true;
+bool using_nm = false;
 TGAColor nm;
 
 void show_image(TGAImage &image)
@@ -285,7 +285,16 @@ struct PhongShader : public MyShader
             norm[2] = nm_[2][0];
             norm.normalize();
         }
+        else
+        {
+            // 如果不使用法线贴图，使用插值法向量
+            norm[0] = c.x * node[2][0].x + c.y * node[2][1].x + c.z * node[2][2].x;
+            norm[1] = c.x * node[2][0].y + c.y * node[2][1].y + c.z * node[2][2].y;
+            norm[2] = c.x * node[2][0].z + c.y * node[2][1].z + c.z * node[2][2].z;
+            // norm = (node[0][1]- node[0][2])^(node[0][1] - node[0][0]);//使用三角形法向量
+            norm.normalize();
 
+        }
         // 镜面反射
         Vec3f r = (norm * (norm * light_dir * 2.f) - light_dir).normalize();
         sp = pow(std::max(r.z, 0.f), sp);
@@ -404,9 +413,9 @@ int main(int argc, char **argv)
             std::cout << "Rendering color!" << std::endl;
             Color_rendering(model, shader, zbuffer, image, light_dir);
 
-            model = new Model("./tga/african_head_eye_inner.obj");
-            std::cout << "Rendering color!" << std::endl;
-            Color_rendering(model, shader, zbuffer, image, light_dir);
+            // model = new Model("./tga/african_head_eye_inner.obj");
+            // std::cout << "Rendering color!" << std::endl;
+            // Color_rendering(model, shader, zbuffer, image, light_dir);
 
             std::cout << "Rendering Finish!" << std::endl;
 
