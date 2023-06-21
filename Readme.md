@@ -21,12 +21,13 @@ This project aims to document my self-learning journey in Computer Graphics and 
 <tr>
 <td>
 <p>* Shader Based</p>
-<p>* Depth Buffer</p>
-<p>* Interpolation Normal Vector</p>
+<p>* Flat Shading</p>
+<p>* Gouraud Shading</p>
+<p>* Blinn-Phong Shading</p>
+<p>* Depth  Testing</p>
 <p>* Normal Mapping  </p>
 <p>* Tangent Space Normal Mapping</p>
 <p>* Shadow Mapping</p>
-<p>* Blinn-Phong Model</p>
 <p>* X11 + Keyboard-based Camera/Light control<p>
 </td>
 <td><center><img src="./wolf.gif" width="200" height="200" /></center>
