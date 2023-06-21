@@ -30,7 +30,7 @@ Vec3f origin_light_dir(1, 1, 1);
 int if_change_light = 1;
 Matrix tobuffer = Matrix::identity(4);
 Display *display = XOpenDisplay(NULL);
-Window window = XCreateSimpleWindow(display, RootWindow(display, DefaultScreen(display)), 10, 10, 900, 900, 1, BlackPixel(display, DefaultScreen(display)), WhitePixel(display, DefaultScreen(display)));
+Window window = XCreateSimpleWindow(display, RootWindow(display, DefaultScreen(display)), 10, 10, width+100, height+100, 1, BlackPixel(display, DefaultScreen(display)), WhitePixel(display, DefaultScreen(display)));
 XEvent event;
 GC gc = XCreateGC(display, window, 0, nullptr);
 bool using_tangent = false;
@@ -40,9 +40,9 @@ TGAColor nm;
 void show_image(TGAImage &image)
 {
 
-    char image2[900][900][4];
-    for (int i = 0; i <= 800; i++)
-        for (int j = 0; j <= 800; j++)
+    char image2[width+100][height+100][4];
+    for (int i = 0; i <= width; i++)
+        for (int j = 0; j <= height; j++)
         {
             image2[j][i][0] = image.get(i, j).b;
             image2[j][i][1] = image.get(i, j).g;
@@ -51,10 +51,10 @@ void show_image(TGAImage &image)
         }
 
     XImage *xImage = XCreateImage(display, DefaultVisual(display, DefaultScreen(display)), 24,
-                                  ZPixmap, 0, reinterpret_cast<char *>(image2), 900, 900, 32, 0);
+                                  ZPixmap, 0, reinterpret_cast<char *>(image2), width+100, height+100, 32, 0);
 
     // 绘制图像
-    XPutImage(display, window, gc, xImage, 0, 0, 0, 0, 900, 900);
+    XPutImage(display, window, gc, xImage, 0, 0, 0, 0, width+100, height+100);
     XFlush(display);
 }
 void camera_control(char keyBuffer[32])
