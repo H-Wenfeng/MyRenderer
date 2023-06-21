@@ -413,9 +413,9 @@ int main(int argc, char **argv)
             std::cout << "Rendering color!" << std::endl;
             Color_rendering(model, shader, zbuffer, image, light_dir);
 
-            // model = new Model("./tga/african_head_eye_inner.obj");
-            // std::cout << "Rendering color!" << std::endl;
-            // Color_rendering(model, shader, zbuffer, image, light_dir);
+            model = new Model("./tga/african_head_eye_inner.obj");
+            std::cout << "Rendering color!" << std::endl;
+            Color_rendering(model, shader, zbuffer, image, light_dir);
 
             std::cout << "Rendering Finish!" << std::endl;
 

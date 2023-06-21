@@ -124,11 +124,11 @@ void triangle(std::vector<std::array<Vec3f, 3>> node, MyShader &Shader, std::vec
 	pts[0] = m2v(ViewPort * Projection * v2m(pts[0]));
 	pts[1] = m2v(ViewPort * Projection * v2m(pts[1]));
 	pts[2] = m2v(ViewPort * Projection * v2m(pts[2]));
-
-	float lbound = std::min(pts[0].x, std::min(pts[1].x, pts[2].x));
-	float rbound = std::max(pts[0].x, std::max(pts[1].x, pts[2].x));
-	float ubound = std::min(pts[0].y, std::min(pts[1].y, pts[2].y));
-	float bbound = std::max(pts[0].y, std::max(pts[1].y, pts[2].y));
+	//保护边界
+	float lbound = std::max(0.f, 	std::min(pts[0].x, std::min(pts[1].x, pts[2].x)));
+	float rbound = std::min(image.get_width()*1.f,	std::max(pts[0].x, std::max(pts[1].x, pts[2].x)));
+	float ubound = std::max(0.f,	std::min(pts[0].y, std::min(pts[1].y, pts[2].y)));
+	float bbound = std::min(image.get_height()*1.f,	std::max(pts[0].y, std::max(pts[1].y, pts[2].y)));
 	for (int x = lbound; x <= rbound; x++)
 		for (int y = ubound; y <= bbound; y++)
 		{
