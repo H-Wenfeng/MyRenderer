@@ -153,7 +153,7 @@ bool TGAImage::write_tga_file(const char *filename, bool rle) {
 	std::ofstream out;
 	out.open (filename, std::ios::binary);
 	if (!out.is_open()) {
-		std::cerr << "can't open file " << filename << "\n";
+		std::cerr << "打开纹理失败： " << filename << "\n";
 		out.close();
 		return false;
 	}

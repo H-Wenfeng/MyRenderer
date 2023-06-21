@@ -38,14 +38,11 @@ Model::Model(std::string filename) : verts_(), faces_()
             {
                 idx--; // in wavefront obj all indices start at 1, not zero
                 f.push_back(idx);
-                // std::cout<<idx<<' ';
                 secondidx--;
                 ft.push_back(secondidx);
                 thirdidx--;
                 vn.push_back(thirdidx);
-                // std::cout<<secondidx<<' ';
             }
-            // std::cout<<std::endl;
             ft_.push_back(ft);
             faces_.push_back(f);
             vn_.push_back(vn);
@@ -55,13 +52,10 @@ Model::Model(std::string filename) : verts_(), faces_()
 
             iss >> trash >> trash;
             Vec3f vt;
-            // std::cout<<trash<<' ';
             for (int i = 0; i < 3; i++)
             {
                 iss >> vt.raw[i];
-                // std::cout<<vt.raw[i]<<' ';
             }
-            // std::cout<<std::endl;
             vts_.push_back(vt);
         }
         else if (!line.compare(0, 3, "vn "))
@@ -69,17 +63,14 @@ Model::Model(std::string filename) : verts_(), faces_()
 
             iss >> trash >> trash;
             Vec3f norm;
-            // std::cout<<trash<<' ';
             for (int i = 0; i < 3; i++)
             {
                 iss >> norm.raw[i];
-                // std::cout<<vt.raw[i]<<' ';
             }
-            // std::cout<<std::endl;
             vns_.push_back(norm.normalize());
         }
     }
-    std::cout << "# v# " << verts_.size() << " f# " << faces_.size() << " vt# " << vts_.size() << " vn# " << vns_.size() << std::endl;
+    std::cout << "# 顶点数 " << verts_.size() << " #三角形数 " << faces_.size() << " #纹理坐标数 " << vts_.size() << " #顶点法向量数 " << vns_.size() << std::endl;
     std::string filehead = filename.replace(filename.length() - 4, 4, "");
     texture.read_tga_file(filehead + "_diffuse.tga"); // normal.read_tga_file("./tga/african_head_nm.tga");
     normal.read_tga_file(filehead + "_nm.tga");
