@@ -3,7 +3,7 @@
 
 
 #include "tgaimage.h"
-#include "geometry.h"
+#include "math.h"
 #include <array>
 
 extern Matrix Projection;

@@ -2,7 +2,7 @@
 #define __MODEL_H__
 
 #include <vector>
-#include "geometry.h"
+#include "math.h"
 #include "tgaimage.h"
 #include <string>
 

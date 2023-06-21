@@ -2,7 +2,7 @@
 #include <limits>
 #include <cstdlib>
 #include <iostream>
-#include "geometry.h"
+#include "math.h"
 #include "mygl.h"
 
 Matrix Projection = Matrix::identity(4);

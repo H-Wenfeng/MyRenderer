@@ -2,7 +2,7 @@
 #include <cmath>
 #include "tgaimage.h"
 #include "model.h"
-#include "geometry.h"
+#include "math.h"
 #include <iostream>
 #include <array>
 #include "mygl.h"
@@ -34,7 +34,7 @@ Window window = XCreateSimpleWindow(display, RootWindow(display, DefaultScreen(d
 XEvent event;
 GC gc = XCreateGC(display, window, 0, nullptr);
 bool using_tangent = false;
-bool using_nm = false;
+bool using_nm = true;
 TGAColor nm;
 
 void show_image(TGAImage &image)
