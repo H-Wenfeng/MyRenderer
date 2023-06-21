@@ -27,7 +27,7 @@ This project aims to document my self-learning journey in Computer Graphics and 
 <p>* Tangent Space Normal Mapping</p>
 <p>* Shadow Mapping</p>
 <p>* Blinn-Phong Model</p>
-<p>* X11 API + Keyboard-based Camera/Light control<p>
+<p>* X11 + Keyboard-based Camera/Light control<p>
 </td>
 <td><center><img src="./wolf.gif" width="200" height="200" /></center>
 </td>
