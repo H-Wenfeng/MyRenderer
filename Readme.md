@@ -23,7 +23,7 @@ This project aims to document my self-learning journey in Computer Graphics and 
         <p>* Shader Based</p>
         <p>* Flat Shading</p>
         <p>* Gouraud Shading</p>
-        <p>* Blinn-Phong Shading</p>
+        <p>* Phong Shading</p>
         <p>* Depth Testing</p>
         <p>* Normal Mapping</p>
         <p>* Tangent Space Normal Mapping</p>
