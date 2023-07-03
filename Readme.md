@@ -37,7 +37,7 @@ This project aims to document my self-learning journey in Computer Graphics and 
       <td>
         <p>* RayTracer ! (I love Pink Floyd :)</p>
       </td>
-      <td colspan="2"><center><img src="./galaxy.png" width="640" height="360" /></center></td>
+      <td colspan="2"><center><img src="./galaxy.png" width="512" height="384" /></center></td>
     </tr>
   </table>
 </div>
