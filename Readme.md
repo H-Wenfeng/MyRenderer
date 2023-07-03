@@ -14,7 +14,7 @@
 
 ## Introductions :smiley_cat:
 
-This project aims to document my self-learning journey in Computer Graphics and improve it further in the future. One of the main goals is to ensure that all important code blocks are accompanied by detailed annotations for better understanding. Additionally, I will strive to add more functions and reproduce interesting papers using this renderer.
+This project aims to document my self-learning journey in Computer Graphics and further improve it in the future. I will try to write all the code myself and strive to accurately reproduce the equations. As a result, the code may have a fully-personalized style. One of the main objectives is to ensure that all important code blocks are accompanied by detailed annotations, providing better understanding for readers. Additionally, I will work towards adding more functions and reproducing interesting papers using this renderer.
 ## Features :smile_cat:
 <div align="left">
   <table rules="none">
@@ -81,3 +81,7 @@ https://nostarch.com/computer-graphics-scratch
 https://learnopengl.com/
 
 https://github.com/ssloy/tinyrenderer
+
+https://en.wikipedia.org/wiki/Total_internal_reflection
+
+https://en.wikipedia.org/wiki/Specular_reflection
