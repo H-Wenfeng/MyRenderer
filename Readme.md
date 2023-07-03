@@ -30,8 +30,8 @@ This project aims to document my self-learning journey in Computer Graphics and 
         <p>* Shadow Mapping</p>
         <p>* X11 + Keyboard-based Camera/Light control</p>
       </td>
-      <td style="vertical-align: top;"><center><img src="./wolf.gif" width="200" height="200" /></center></td>
-      <td style="vertical-align: top;"><center><img src="./head.gif" width="200" height="200" /></center></td>
+      <td style="vertical-align: top;"><center><img src="./wolf.gif" width="250" height="250" /></center></td>
+      <td style="vertical-align: top;"><center><img src="./head.gif" width="250" height="250" /></center></td>
     </tr>
     <tr>
       <td>
